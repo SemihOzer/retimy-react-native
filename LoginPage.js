@@ -5,9 +5,24 @@ import { StyleSheet } from 'react-native';
 const LoginPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [errorText, setErrorText] = useState('');
   
     const handleLogin = ({navigation}) => {
-      console.log(`Username: ${username}, Password: ${password}`);
+
+      fetch('http://localhost:8080/user/getByUserName/'+username)
+      .then(response => response.json())
+      .then(json => {
+        if(password == json.password){
+          console.log("True");
+          setErrorText('');
+        }else{
+         setErrorText("Password or username is incorrect");
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
     };
   
     return (
@@ -26,6 +41,7 @@ const LoginPage = () => {
           onChangeText={(text) => setPassword(text)}
           secureTextEntry={true}
         />
+        <Text style={styles.errorText}>{errorText}</Text>
         <Button title="Log in" onPress={handleLogin} />
       </View>
       
@@ -33,6 +49,12 @@ const LoginPage = () => {
   };
 
   const styles = StyleSheet.create({
+    errorText: {
+      paddingTop: 20,
+      color: "red",
+      fontSize: 20,
+      paddingBottom: 10
+    },
     container: {
       flex: 1,
       justifyContent: 'center',

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button } from 'react-native';
+import { View, Text, TextInput, Button, TouchableOpacity } from 'react-native';
 import { StyleSheet } from 'react-native';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { format } from "date-fns";
@@ -15,6 +15,8 @@ const LoginPage = () => {
     const [birth_date, setBirthDate] = useState(new Date());
     const [birth_text, setBirthText] = useState('');
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    const [errorText, setErrorText] = useState('');
+
 
 
     const validateEmail = (text) => {
@@ -48,8 +50,27 @@ const LoginPage = () => {
 
    
     const handleSignUp = ({navigation}) => {
-      //TODO: PUT User  
-      fetch("http://localhost:8080/user/save", {
+      let email_reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+      let password_reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+      var now = new Date();
+
+      if(name.length < 3 || name.length > 15){
+        setErrorText("The name must contain at least 3 and no more than 15 letters.")
+      }else if(surname.length < 3 || surname.length > 15){
+        setErrorText("The surname must contain at least 3 and no more than 15 letters.")
+      }else if(username.length < 3 || surname.length > 15){
+        setErrorText("The username must contain at least 3 and no more than 15 letters.")
+      }else if(email_reg.test(email) == false){
+        setErrorText("Please enter a valid email")
+      }else if(birth_date > now){
+        setErrorText("Birthdate must be in the past")
+      }else if(password_reg.test(password) == false){
+        //8 char, upper case, lower case, one number
+        setErrorText("Password must have 8 char, at least one upper, lower and number")
+      }else{
+        setErrorText('');
+
+        fetch("http://localhost:8080/user/save", {
   method: "POST",
   headers: {
     Accept: "application/json",
@@ -74,6 +95,8 @@ const LoginPage = () => {
   .then((responseData) => {
     console.log(JSON.stringify(responseData));
   });
+      }
+  
     };
   
     return (
@@ -111,8 +134,9 @@ const LoginPage = () => {
           value={password}
           onChangeText={(text) => setPassword(text)}
         />
-        <Button color="#ccc" title="Pick Birth Date" onPress={showDatePicker} />
-        <Text style={styles.birthText} >{birth_text}</Text>
+        <Button color="rgb(115,115,115)"  title="Pick Birth Date" onPress={showDatePicker} />
+        <TouchableOpacity onPress={showDatePicker}><Text style={styles.birthText} >{birth_text}</Text></TouchableOpacity>
+        <Text style={styles.errorText}>{errorText}</Text>
         <DateTimePickerModal
         isVisible={isDatePickerVisible}
         mode="date"
@@ -120,7 +144,7 @@ const LoginPage = () => {
         onCancel={hideDatePicker}
         />    
         
-        <Button style={{paddingTop: 50}} title="Sign Up" onPress={handleSignUp} />
+        <Button style={styles.signupButton} title="Sign Up" onPress={handleSignUp} />
       </View>
 
       
@@ -129,8 +153,16 @@ const LoginPage = () => {
   };
 
   const styles = StyleSheet.create({
+    
+    errorText: {
+      color: "red",
+      fontSize: 20,
+      paddingBottom: 20
+    },
     birthText: {
-        color: "#ccc"
+        color: "rgb(43,44,45)",
+        fontSize: 20,
+        paddingBottom: 20
     },
     container: {
       flex: 1,
