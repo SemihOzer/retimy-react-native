@@ -65,7 +65,7 @@ const LoginPage = () => {
     },
     title: {
       fontSize: 50,
-      paddingBottom: 20
+      paddingBottom: 40
     
     },
     input: {
