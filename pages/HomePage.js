@@ -8,7 +8,7 @@ var posts = [];
           .then(response => response.json())
           .then(json => {
             posts = Object.values(json);
-
+            console.log(posts);
           })
           .catch(error => {
             console.error(error);
@@ -76,7 +76,7 @@ const HomePage = () => (
   <FlatList
     data={posts}
     keyExtractor={(item) => item.id.toString()}
-    renderItem={({ item }) => <Post title={item.title} text={item.text} image={item.image} comments={item.comments} likes={item.likes} />}
+    renderItem={({ item }) => <Post title={item.title} text={item.text} image={item.image} comments={item.comments} likes={item.likes.length} />}
   />
   
   </View>

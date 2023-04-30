@@ -6,6 +6,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import HomePage from './pages/HomePage';
+import CreatePostPage from './pages/CreatePostPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,7 +24,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="HomePage">
+      <Stack.Navigator initialRouteName="CreatePostPage">
         <Stack.Screen
           name="LoginPage"
           component={LoginPage}
@@ -53,6 +54,11 @@ export default function App() {
             
           }}
           component={HomePage}
+          />
+          <Stack.Screen
+          name='CreatePostPage'
+          component={CreatePostPage}
+          options={{headerShown: false}}
           />
       </Stack.Navigator>
     </NavigationContainer>
