@@ -70,7 +70,7 @@ const LoginPage = () => {
       }else{
         setErrorText('');
 
-        fetch("http://localhost:8080/user/save", {
+  fetch("http://localhost:8080/user/save", {
   method: "POST",
   headers: {
     Accept: "application/json",
@@ -88,7 +88,7 @@ const LoginPage = () => {
     followers: [],
     followings: [],
     known_users: [],
-    timestamp: new Date(),
+    timestamp: new Date()
   }),
 })
   .then((response) => response.json())

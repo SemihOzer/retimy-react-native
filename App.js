@@ -24,7 +24,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="CreatePostPage">
+      <Stack.Navigator initialRouteName="SignupPage">
         <Stack.Screen
           name="LoginPage"
           component={LoginPage}
