@@ -16,6 +16,7 @@ const LoginPage = ({navigation}) => {
           console.log("True");
           setErrorText('');
           navigation.navigate('HomePage',{json});
+
         }else{
          setErrorText("Password or username is incorrect");
         }

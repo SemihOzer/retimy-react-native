@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Image, Alert, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import AWS from 'aws-sdk';
+import awsConfig from '../assets/awsConfig';
 
 
 const CreatePostPage = () => {
@@ -24,13 +26,14 @@ const CreatePostPage = () => {
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
-      base64: true
+      base64: true,
     });
 
     if (!result.cancelled) {
       setImage(result.assets[0].uri);
 
       setBase64(result.assets[0].base64);
+
     }
   };
 
@@ -75,7 +78,34 @@ const CreatePostPage = () => {
     console.log(JSON.stringify(responseData));
   });
       }else{
-        fetch("http://localhost:8080/post/save", {
+
+
+        const s3 = new AWS.S3({
+          region: awsConfig.region,
+          accessKeyId: awsConfig.accessKeyId,
+          secretAccessKey: awsConfig.secretAccessKey,
+        });
+        
+
+        const params = {
+          Key: Date.now().toString(),
+          Bucket: 'retimy-images',
+          Body: base64,
+          ContentEncoding: 'base64',
+
+        };
+
+        s3.upload(params, (err, data) => {
+          if (err) {
+            console.log(err);
+          } else {
+
+
+            console.log(data);
+
+            
+
+            fetch("http://localhost:8080/post/save", {
           method: "POST",
           headers: {
             Accept: "application/json",
@@ -102,13 +132,17 @@ const CreatePostPage = () => {
             likes: [],
             title: title,
             text: text,
-            photo_id: base64,
+            photo_id: data.Key,
           }),
         })
           .then((response) => response.json())
           .then((responseData) => {
             console.log(JSON.stringify(responseData));
           });
+          }
+        });
+
+        
       }
     }
 

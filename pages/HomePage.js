@@ -1,7 +1,8 @@
 import {React, useState} from 'react';
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, TextInput} from 'react-native';
 import { Icon } from '@rneui/themed';
-
+import AWS from 'aws-sdk';
+import awsConfig from '../assets/awsConfig';
 
 
 var posts = [];
@@ -14,9 +15,12 @@ var posts = [];
           .catch(error => {
             console.error(error);
           });
-            
 
-
+const s3 = new AWS.S3({
+  region: awsConfig.region,
+  accessKeyId: awsConfig.accessKeyId,
+  secretAccessKey: awsConfig.secretAccessKey,
+});
 
 const Post = ({title, text, image, comments, likes}) => {
     const [icon, setIcon] = useState("favorite-border");
@@ -44,10 +48,29 @@ const Post = ({title, text, image, comments, likes}) => {
         }
       };
 
+      
+      if(image != null){
+        const params = {
+          Bucket: 'retimy-images',
+          Key: image
+        };
+        
+        s3.getObject(params, (err, data) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(data.Body.data.toString('utf-8'));
+
+          }
+        });
+      }
+
+      
+
   return (<View style={styles.post}>
     <Text style={styles.title}>{title}</Text>
     <Text style={styles.text}>{text}</Text>
-    {image && <Image source={{ uri: image }} style={styles.image} />}
+    
     <View style={styles.footer}>
         <View style={styles.footerRow}>
         <TouchableOpacity onPress={likeButtonHandle}><Icon style={styles.icon} name={icon}/></TouchableOpacity>
@@ -91,7 +114,7 @@ const HomePage = ({navigation,route}) => {
   <FlatList
     data={posts}
     keyExtractor={(item) => item.id.toString()}
-    renderItem={({ item }) => <Post title={item.title} text={item.text} image={item.image} comments={item.comments} likes={item.likes.length} />}
+    renderItem={({ item }) => <Post title={item.title} text={item.text} image={item.photo_id} comments={item.comments} likes={item.likes.length} />}
   />
   
   </View>);
