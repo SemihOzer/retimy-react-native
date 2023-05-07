@@ -6,7 +6,7 @@ import { format } from "date-fns";
 
 
 
-const LoginPage = () => {
+const LoginPage = ({navigation}) => {
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
     const [username, setUsername] = useState('');
@@ -49,7 +49,7 @@ const LoginPage = () => {
       };
 
    
-    const handleSignUp = ({navigation}) => {
+    const handleSignUp = () => {
       let email_reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
       let password_reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
       var now = new Date();
@@ -91,9 +91,15 @@ const LoginPage = () => {
     timestamp: new Date()
   }),
 })
-  .then((response) => response.json())
-  .then((responseData) => {
-    console.log(JSON.stringify(responseData));
+  .then((response) =>
+  { 
+
+    if(response.status == 201){
+      navigation.navigate('LoginPage')
+    }else{
+      setErrorText("There is a network error. Please try again after a while.")
+    }
+
   });
       }
   

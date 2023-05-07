@@ -24,7 +24,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="SignupPage">
+      <Stack.Navigator initialRouteName="CreatePostPage">
         <Stack.Screen
           name="LoginPage"
           component={LoginPage}
@@ -43,15 +43,7 @@ export default function App() {
           <Stack.Screen
           name="HomePage"
           options={{
-              headerStyle: {
-                backgroundColor: 'rgb(230, 230, 230)',
-              },
-              headerTitle: (props) => <LogoTitle {...props}/>,
-              headerTitleStyle: {
-                color: 'black',
-                fontSize: 20
-              }
-            
+            headerShown: false
           }}
           component={HomePage}
           />

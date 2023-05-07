@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button } from 'react-native';
 import { StyleSheet } from 'react-native';
 
-const LoginPage = () => {
+const LoginPage = ({navigation}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorText, setErrorText] = useState('');
   
-    const handleLogin = ({navigation}) => {
+    const handleLogin = ({}) => {
 
       fetch('http://localhost:8080/user/getByUserName/'+username)
       .then(response => response.json())
@@ -15,6 +15,7 @@ const LoginPage = () => {
         if(password == json.password){
           console.log("True");
           setErrorText('');
+          navigation.navigate('HomePage',{json});
         }else{
          setErrorText("Password or username is incorrect");
         }

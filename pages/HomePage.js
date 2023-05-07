@@ -3,19 +3,22 @@ import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, TextInput} f
 import { Icon } from '@rneui/themed';
 
 
+
 var posts = [];
       fetch("http://localhost:8080/post/getAllPosts")
           .then(response => response.json())
           .then(json => {
             posts = Object.values(json);
-            console.log(posts);
+
           })
           .catch(error => {
             console.error(error);
           });
             
 
-const Post = ({ title, text, image, comments, likes }) => {
+
+
+const Post = ({title, text, image, comments, likes}) => {
     const [icon, setIcon] = useState("favorite-border");
     const [comment, setComment] = useState('');
     const [isVisibleCommentSend, setIsVisibleCommentSend] = useState(false);
@@ -30,7 +33,6 @@ const Post = ({ title, text, image, comments, likes }) => {
 
       const sendButtonHandle = () => {
         //TODO: Send comment
-
       };
       
       const onChangeTextComment = (text) => {
@@ -71,19 +73,45 @@ const Post = ({ title, text, image, comments, likes }) => {
   );
 };
 
-const HomePage = () => (
-  <View>
+const Header = () => {
+  return (
+    <View style={styles.container}>
+      <Image
+        source={require('/Users/semihozer/Desktop/retimy-react-native/assets/retimy-logo-notext.png')}
+        style={styles.logo}
+      />
+    </View>
+  );
+};
+
+const HomePage = ({navigation,route}) => {
+  //route.params.json....
+  return (<View>
+  <Header/>
   <FlatList
     data={posts}
     keyExtractor={(item) => item.id.toString()}
     renderItem={({ item }) => <Post title={item.title} text={item.text} image={item.image} comments={item.comments} likes={item.likes.length} />}
   />
   
-  </View>
-);
+  </View>);
+};
 
 const styles = StyleSheet.create({
-    
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 55,
+    backgroundColor: 'rgb(230, 230, 230)',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  logo: {
+    marginTop:30,
+    width: 150,
+    height: 50,
+  },
     commentRow:{
       flexDirection:'row',
       justifyContent: 'space-between',
