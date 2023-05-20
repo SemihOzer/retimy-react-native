@@ -3,7 +3,7 @@ import { View, TextInput, Button, Image, Alert, StyleSheet } from 'react-native'
 import * as ImagePicker from 'expo-image-picker';
 import AWS from 'aws-sdk';
 import awsConfig from '../assets/awsConfig';
-
+import * as Base64Binary from 'base64-arraybuffer';
 
 const CreatePostPage = () => {
   const [title, setTitle] = useState('');
@@ -86,12 +86,13 @@ const CreatePostPage = () => {
           secretAccessKey: awsConfig.secretAccessKey,
         });
         
+        const arrayBuffer = Base64Binary.decode(base64);
 
         const params = {
           Key: Date.now().toString(),
           Bucket: 'retimy-images',
-          Body: base64,
-          ContentEncoding: 'base64',
+          Body: arrayBuffer,
+          ContentType: 'image/jpg',
 
         };
 

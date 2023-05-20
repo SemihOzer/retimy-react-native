@@ -3,6 +3,9 @@ import { View, Text, TextInput, Button, TouchableOpacity } from 'react-native';
 import { StyleSheet } from 'react-native';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { format } from "date-fns";
+import headers from '../headers';
+
+const base64 = require('base-64');
 
 
 
@@ -70,11 +73,15 @@ const LoginPage = ({navigation}) => {
       }else{
         setErrorText('');
 
+
+  const auth = "Basic " + base64.encode("retimy-security:7a83758a-0d83-40c1-9dba-ce3612b2ac4f");
+        
   fetch("http://localhost:8080/user/save", {
   method: "POST",
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
+    Authorization: auth
   },
   body: JSON.stringify({
     first_name: name,

@@ -1,7 +1,7 @@
 const awsConfig = {
-    accessKeyId: 'AKIAROFLV6VPKNB2DN52',
-    secretAccessKey: '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',
-    region: 'eu-west-1',
+    accessKeyId: 'accesskeyid',
+    secretAccessKey: 'accesskey',
+    region: 'region',
   };
   
   export default awsConfig;

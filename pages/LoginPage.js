@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button } from 'react-native';
 import { StyleSheet } from 'react-native';
+import * as Base64Binary from 'base64-arraybuffer';
+import headers from '../headers';
 
 const LoginPage = ({navigation}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorText, setErrorText] = useState('');
   
+
     const handleLogin = ({}) => {
 
-      fetch('http://localhost:8080/user/getByUserName/'+username)
-      .then(response => response.json())
+      fetch('http://localhost:8080/user/getByUserName/'+username, {
+        method: 'GET',
+        headers: headers
+      }
+      ).then(response => response.json())
       .then(json => {
         if(password == json.password){
           console.log("True");

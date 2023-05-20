@@ -1,12 +1,17 @@
 import {React, useState} from 'react';
-import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, TextInput} from 'react-native';
+import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, TextInput,ActivityIndicator} from 'react-native';
 import { Icon } from '@rneui/themed';
 import AWS from 'aws-sdk';
 import awsConfig from '../assets/awsConfig';
+import * as Base64Binary from 'base64-arraybuffer';
+import headers from '../headers';
 
 
 var posts = [];
-      fetch("http://localhost:8080/post/getAllPosts")
+      fetch("http://localhost:8080/post/getAllPosts", {
+        method: 'GET',
+        headers: headers
+            })
           .then(response => response.json())
           .then(json => {
             posts = Object.values(json);
@@ -22,10 +27,22 @@ const s3 = new AWS.S3({
   secretAccessKey: awsConfig.secretAccessKey,
 });
 
+const ImageWithActivityIndicator = ({isLoading,image,base64}) =>{
+  if(isLoading == true && image != null){
+    return (<ActivityIndicator size="large" color="rgb(206, 206, 206)" />);
+  }else if(isLoading == false && image !=null){
+    return (<Image source={{ uri: `data:image/jpg;base64,${base64}` }} style={styles.image} />);
+  }else{
+    return (null);
+  }
+}
+
 const Post = ({title, text, image, comments, likes}) => {
     const [icon, setIcon] = useState("favorite-border");
     const [comment, setComment] = useState('');
     const [isVisibleCommentSend, setIsVisibleCommentSend] = useState(false);
+    const [base64,setBase64] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
 
     const likeButtonHandle = () => {
         if(icon == "favorite"){
@@ -59,7 +76,13 @@ const Post = ({title, text, image, comments, likes}) => {
           if (err) {
             console.log(err);
           } else {
-            console.log(data.Body.data.toString('utf-8'));
+            
+            
+            setBase64(Base64Binary.encode(data.Body));
+            setIsLoading(false);
+
+        
+
 
           }
         });
@@ -70,6 +93,9 @@ const Post = ({title, text, image, comments, likes}) => {
   return (<View style={styles.post}>
     <Text style={styles.title}>{title}</Text>
     <Text style={styles.text}>{text}</Text>
+    
+    
+    <ImageWithActivityIndicator isLoading={isLoading} image={image} base64={base64}/>
     
     <View style={styles.footer}>
         <View style={styles.footerRow}>
